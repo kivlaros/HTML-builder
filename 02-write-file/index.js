@@ -12,7 +12,6 @@ fs.writeFile(file, '',()=>{
 
 rl.on("line",async function (input) {
   if(input == 'exit'){
-    console.log('please enter the data')
     process.emit("SIGINT")
   }
   let data = await fs.promises.readFile(file, 'utf-8')
@@ -21,10 +20,10 @@ rl.on("line",async function (input) {
 });
 
 rl.on('SIGINT', () => {
-  console.log('data entry is finished')
   process.emit("SIGINT")
 });
 
 process.on("SIGINT", function () {
+  console.log('data entry is finished')
   process.exit();
 });
