@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path')
 
 const styleDir = `${__dirname}/styles`
-const distDir = `${__dirname}/project-dist/bundle.css`
+const distDir  = `${__dirname}/project-dist/bundle.css`
 
 async function mergeStyles(){
   await fs.promises.writeFile(distDir,'')
@@ -15,5 +15,6 @@ async function mergeStyles(){
     }
   }
 }
+
 
 mergeStyles()
