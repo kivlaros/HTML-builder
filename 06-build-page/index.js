@@ -23,22 +23,18 @@ async function createIndexHtml(){
 
 async function makeDir(){
   await fs.promises.mkdir(distDir, { recursive: true })
-  await fs.promises.mkdir(distAssets, { recursive: true })
 }
 
-async function copyAssets(){
-  const folders = await fs.promises.readdir(assetsDir,{withFileTypes: true});
-  for (const folder of folders){
-    if(folder.isDirectory()){
-      console.log(`${distAssets}/${folder.name}`)
-      await fs.promises.mkdir(`${distAssets}/${folder.name}`, { recursive: true })
-      const files = await fs.promises.readdir(`${assetsDir}/${folder.name}`,{withFileTypes: true});
-      for (const file of files){
-        if(file.isFile()){
-          await fs.promises.copyFile(`${assetsDir}/${folder.name}/${file.name}`,`${distAssets}/${folder.name}/${file.name}`)
-        }
-      }
+async function copyFiles(dirSorce, dir){
+  await fs.promises.mkdir(dir, { recursive: true })
+  const files = await fs.promises.readdir(dirSorce,{withFileTypes: true});
+  for (const file of files){
+    if(file.isFile()){
+      await fs.promises.copyFile(`${dirSorce}/${file.name}`,`${dir}/${file.name}`)
+    }else{
+      await copyFiles(`${dirSorce}/${file.name}`,`${dir}/${file.name}`)
     }
+    
   }
 }
 
@@ -62,11 +58,11 @@ async function deleteFolder(){
 }
 
 async function bildPage(){
-  await deleteFolder()      //удаляем директорию project-dist
-  await makeDir()           //создаем директории
-  await createIndexHtml()   //собираем и создаем index.html
-  await copyAssets()        //копируем директорию assets со всем содержимым
-  await mergeStyles()       //собираем и создаем style.css
+  await deleteFolder()                    //удаляем директорию project-dist
+  await makeDir()                         //создаем директории
+  await createIndexHtml()                 //собираем и создаем index.html
+  await copyFiles(assetsDir, distAssets)  //копируем директорию assets со всем содержимым
+  await mergeStyles()                     //собираем и создаем style.css
 }
 
 bildPage()
